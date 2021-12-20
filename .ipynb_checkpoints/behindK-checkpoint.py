@@ -7,7 +7,7 @@ import time
 
 
 def Time_to_finish(t):
-    total = 8*7*4*60
+    total = 8*5*60
 
     current_performing = time.time()-t
 
@@ -21,7 +21,7 @@ def Time_to_finish(t):
 
 
 # Import instances and load the GRASP engine
-grasp = engine.GRASP()
+gvns = engine.GVNS()
 
 AMPARO = engine.Instance(
     "/home/adrian/UNIVERSIDAD/4to_Curso" +
@@ -48,8 +48,8 @@ VIRGINIA = engine.Instance(
     "/home/adrian/UNIVERSIDAD/4to_Curso" +
     "/A.MIO/PROJECT/pythoncode/MDP_instances/Virginia.xlsx")
 
-# Array with considered alphas
-alphas = np.array([0, 0.2, 0.4, 0.5, 0.6, 0.8, 1])
+# Array with considered K's
+Ks = np.arange(1, 6)
 
 # Lists with instances and names
 instancias = [AMPARO, BORJA, DANIEL,
@@ -62,11 +62,11 @@ i = 0
 t_0 = time.time()
 primera = True
 for instancia in instancias:
-    for alpha in alphas:
+    for K in Ks:
 
-        paquete = np.array(grasp.perform_during(instancia.matrix, alpha, 4*60))
-        columna1 = nombres[i] + f"{alpha}"
-        columna2 = "Time" + nombres[i] + f"{alpha}"
+        paquete = np.array(gvns.perform_GVNS_during(instancia.matrix, 1*60, K))
+        columna1 = nombres[i] + f"{K}"
+        columna2 = "Time" + nombres[i] + f"{K}"
 
         if primera:
             DF = pd.DataFrame(paquete.transpose(),
@@ -83,4 +83,4 @@ for instancia in instancias:
     i += 1
 
 # Save the data in a csv-file
-DF.to_csv("behindAlpha.csv", index=False, na_rep="N/A")
+DF.to_csv("behindKs.csv", index=False, na_rep="N/A")
